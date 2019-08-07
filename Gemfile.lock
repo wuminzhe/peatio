@@ -1,3 +1,11 @@
+GIT
+  remote: http://github.com/dnfd/vault-rails
+  revision: 1d191f32709a478675894c17c720cb5f7493e09a
+  specs:
+    vault-rails (0.5.0)
+      rails (>= 4.1)
+      vault (~> 0.5)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -489,6 +497,7 @@ DEPENDENCIES
   validate_url (~> 1.0.4)
   validates_lengths_from_database (~> 0.7.0)
   vault (~> 0.12)
+  vault-rails (~> 0.5.0)!
   webmock (~> 3.5)
 
 RUBY VERSION

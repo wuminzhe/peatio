@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_25_131843) do
+ActiveRecord::Schema.define(version: 2019_08_07_092706) do
 
   create_table "accounts", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "member_id", null: false
@@ -208,8 +208,8 @@ ActiveRecord::Schema.define(version: 2019_07_25_131843) do
     t.string "currency_id", limit: 10, null: false
     t.integer "account_id", null: false
     t.string "address", limit: 95
-    t.string "secret", limit: 128
-    t.string "details", limit: 1024, default: "{}", null: false
+    t.string "secret_encrypted"
+    t.string "details_encrypted"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["currency_id", "address"], name: "index_payment_addresses_on_currency_id_and_address", unique: true
@@ -278,10 +278,10 @@ ActiveRecord::Schema.define(version: 2019_07_25_131843) do
     t.integer "kind", null: false
     t.integer "nsig"
     t.string "gateway", limit: 20, default: "", null: false
-    t.string "settings", limit: 1000, default: "{}", null: false
     t.decimal "max_balance", precision: 32, scale: 16, default: "0.0", null: false
     t.integer "parent"
     t.string "status", limit: 32
+    t.string "settings_encrypted"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["currency_id"], name: "index_wallets_on_currency_id"

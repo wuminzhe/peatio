@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 class PaymentAddress < ApplicationRecord
+  include Vault::EncryptedModel
   include BelongsToCurrency
   include BelongsToAccount
 
@@ -9,7 +10,8 @@ class PaymentAddress < ApplicationRecord
 
   validates :address, uniqueness: { scope: :currency_id }, if: :address?
 
-  serialize :details, JSON
+  vault_attribute :details, serialize: :json, default: {}
+  vault_attribute :secret
 
   before_validation do
     next if blockchain_api&.case_sensitive?
@@ -42,18 +44,18 @@ class PaymentAddress < ApplicationRecord
 end
 
 # == Schema Information
-# Schema version: 20180925123806
+# Schema version: 20190807092706
 #
 # Table name: payment_addresses
 #
-#  id          :integer          not null, primary key
-#  currency_id :string(10)       not null
-#  account_id  :integer          not null
-#  address     :string(95)
-#  secret      :string(128)
-#  details     :string(1024)     default({}), not null
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
+#  id                :integer          not null, primary key
+#  currency_id       :string(10)       not null
+#  account_id        :integer          not null
+#  address           :string(95)
+#  secret_encrypted  :string(255)
+#  details_encrypted :string(255)
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
 #
 # Indexes
 #
