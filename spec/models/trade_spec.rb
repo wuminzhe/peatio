@@ -52,18 +52,18 @@ describe Trade, '#record_complete_operations!' do
   let(:ask_currency_outcome){ trade.volume }
   let(:bid_currency_outcome){ trade.funds }
 
-  let(:ask_currency_fee){ trade.volume * bid.fee }
-  let(:bid_currency_fee){ trade.funds * ask.fee }
+  let(:ask_currency_fee){ trade.volume * trade.order_fee(bid) }
+  let(:bid_currency_fee){ trade.funds * trade.order_fee(ask) }
 
   let(:ask_currency_income){ ask_currency_outcome - ask_currency_fee }
   let(:bid_currency_income){ bid_currency_outcome - bid_currency_fee }
 
   subject{ trade }
 
-  let(:ask_fee) { 0.002 }
-  let(:bid_fee) { 0.001 }
+  let(:maker_fee) { 0.002 }
+  let(:taker_fee) { 0.001 }
   before do
-    trade.market.update(bid_fee: bid_fee, ask_fee: ask_fee)
+    trade.market.update(maker_fee: maker_fee, taker_fee: taker_fee)
   end
 
   it 'creates four liability operations' do

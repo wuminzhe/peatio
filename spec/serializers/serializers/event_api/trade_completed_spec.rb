@@ -70,24 +70,24 @@ describe Serializers::EventAPI::TradeCompleted, 'Event API' do
     EventAPI.expects(:notify).with('market.btcusd.order_updated', anything).once
     EventAPI.expects(:notify).with('market.btcusd.order_completed', anything).once
     EventAPI.expects(:notify).with('market.btcusd.trade_completed', {
-      id:                    1,
-      market:                'btcusd',
-      price:                 '0.03',
-      buyer_uid:             buyer.uid,
-      buyer_income_unit:     'btc',
-      buyer_income_amount:   '14.0',
-      buyer_income_fee:      '0.021',
-      buyer_outcome_unit:    'usd',
-      buyer_outcome_amount:  '0.42',
-      buyer_outcome_fee:     '0.0',
-      seller_uid:            seller.uid,
-      seller_income_unit:    'usd',
-      seller_income_amount:  '0.42',
-      seller_income_fee:     '0.00063',
-      seller_outcome_unit:   'btc',
-      seller_outcome_amount: '14.0',
-      seller_outcome_fee:    '0.0',
-      completed_at:          completed_at.iso8601
+      id:                      1,
+      market:                  'btcusd',
+      price:                   '0.03',
+      buyer_uid:               buyer.uid,
+      buyer_income_unit:       'btc',
+      buyer_income_amount:     '14.0',
+      buyer_income_fee:        '0.021',
+      buyer_outcome_unit:      'usd',
+      buyer_outcome_amount:    '0.42',
+      buyer_outcome_fee:       '0.0',
+      seller_uid:              seller.uid,
+      seller_income_unit:      'usd',
+      seller_income_amount:    '0.42',
+      seller_income_fee:       '0.00063',
+      seller_outcome_unit:     'btc',
+      seller_outcome_amount:   '14.0',
+      seller_outcome_fee:      '0.0',
+      completed_at:            completed_at.iso8601
     }).once
   end
 

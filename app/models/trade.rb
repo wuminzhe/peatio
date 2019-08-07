@@ -30,6 +30,18 @@ class Trade < ApplicationRecord
     end
   end
 
+  def taker
+    ask_id > bid_id ? ask : bid
+  end
+
+  def order_fee(order)
+    if ask.id == order.id
+      ask == taker ? ask.taker_fee : ask.maker_fee
+    elsif bid.id == order.id
+      bid == taker ? bid.taker_fee : bid.maker_fee
+    end
+  end
+
   def side(member)
     return unless member
 
@@ -72,12 +84,12 @@ class Trade < ApplicationRecord
 
   private
   def record_liability_debit!
-    ask_currency_outcome = volume
-    bid_currency_outcome = funds
+    seller_currency_outcome = volume
+    buyer_currency_outcome = funds
 
     # Debit locked fiat/crypto Liability account for member who created ask.
     Operations::Liability.debit!(
-      amount:    ask_currency_outcome,
+      amount:    seller_currency_outcome,
       currency:  ask.currency,
       reference: self,
       kind:      :locked,
@@ -85,7 +97,7 @@ class Trade < ApplicationRecord
     )
     # Debit locked fiat/crypto Liability account for member who created bid.
     Operations::Liability.debit!(
-      amount:    bid_currency_outcome,
+      amount:    buyer_currency_outcome,
       currency:  bid.currency,
       reference: self,
       kind:      :locked,
@@ -94,14 +106,14 @@ class Trade < ApplicationRecord
   end
 
   def record_liability_credit!
-    # We multiply ask outcome by bid fee.
-    # Fees are related to side bid or ask (not currency).
-    ask_currency_income = volume - volume * bid.fee
-    bid_currency_income = funds - funds * ask.fee
+    # Fees are related to order type Maker or Taker (not currency).
+    seller_currency_income = volume - volume * order_fee(bid)
+    buyer_currency_income = funds - funds * order_fee(ask)
+
 
     # Credit main fiat/crypto Liability account for member who created ask.
     Operations::Liability.credit!(
-      amount:    bid_currency_income,
+      amount:    buyer_currency_income,
       currency:  bid.currency,
       reference: self,
       kind:      :main,
@@ -110,7 +122,7 @@ class Trade < ApplicationRecord
 
     # Credit main fiat/crypto Liability account for member who created bid.
     Operations::Liability.credit!(
-      amount:    ask_currency_income,
+      amount:    seller_currency_income,
       currency:  ask.currency,
       reference: self,
       kind:      :main,
@@ -135,12 +147,12 @@ class Trade < ApplicationRecord
   end
 
   def record_revenues!
-    ask_currency_fee = volume * bid.fee
-    bid_currency_fee = funds * ask.fee
+    seller_currency_fee = volume * order_fee(bid)
+    buyer_currency_fee = funds * order_fee(ask)
 
     # Credit main fiat/crypto Revenue account.
     Operations::Revenue.credit!(
-      amount:    ask_currency_fee,
+      amount:    seller_currency_fee,
       currency:  ask.currency,
       reference: self,
       member_id: bid.member_id
@@ -148,7 +160,7 @@ class Trade < ApplicationRecord
 
     # Credit main fiat/crypto Revenue account.
     Operations::Revenue.credit!(
-      amount:    bid_currency_fee,
+      amount:    buyer_currency_fee,
       currency:  bid.currency,
       reference: self,
       member_id: ask.member_id

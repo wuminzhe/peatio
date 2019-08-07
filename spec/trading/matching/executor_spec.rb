@@ -156,6 +156,30 @@ describe Matching::Executor do
     end
   end
 
+  context 'maker/taker fee' do
+    # Create two limit orders:
+    # Ask: member_id: alice, market: btcusd, price: 10, volume: 5 - Maker;
+    # Bid: member_id: bob, market: btcusd, price: 10, volume: 5 - Taker;
+    # Maker_fee: 10%;
+    # Taker_fee: 20%;
+    # Result after exeuction:
+    # Alice get 49.5 usd;
+    # Bob get 4.9 btc;
+
+    let(:ask) { create(:order_ask, :btcusd, price: price, volume: volume, member: alice) }
+    let(:bid) { create(:order_bid, :btcusd, price: price, volume: volume, member: bob) }
+
+    before do
+      market.update!(maker_fee: 0.01, taker_fee: 0.02)
+      subject.execute!
+    end
+
+    it { expect(ask.member.balance_for(currency: bid.currency, kind: :main)).to eq(49.5) }
+    it { expect(bid.member.balance_for(currency: ask.currency, kind: :main)).to eq(4.9) }
+    it { expect(Operations::Revenue.find_by(currency: bid.currency, member: ask.member).credit).to eq(0.5) }
+    it { expect(Operations::Revenue.find_by(currency: ask.currency, member: bid.member).credit).to eq(0.1) }
+  end
+
   context 'execution fail' do
     let(:ask) { ::Matching::LimitOrder.new create(:order_ask, :btcusd, price: price, volume: volume, member: alice).to_matching_attributes }
     let(:bid) { ::Matching::LimitOrder.new create(:order_bid, :btcusd, price: price, volume: volume, member: bob).to_matching_attributes }
