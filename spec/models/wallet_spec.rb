@@ -51,5 +51,19 @@ describe Wallet do
       expect(subject).to_not be_valid
       expect(subject.errors.full_messages).to eq ['Name has already been taken']
     end
+
+    it 'saves settings in encrypted column' do
+      subject.save
+      expect {
+        subject.uri = 'http://geth:8545/'
+      }.to change { subject.reload.settings_encrypted }
+    end
+
+    it 'updates setting fields' do
+      subject.save
+      expect {
+        subject.uri = 'http://geth:8545/'
+      }.to change { subject.reload.settings['uri'] }.to 'http://geth:8545/'
+    end
   end
 end

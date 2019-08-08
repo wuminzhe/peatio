@@ -53,7 +53,7 @@ end
 #  account_id        :integer          not null
 #  address           :string(95)
 #  secret_encrypted  :string(255)
-#  details_encrypted :string(255)
+#  details_encrypted :string(1024)
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #

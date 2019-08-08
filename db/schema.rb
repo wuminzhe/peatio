@@ -209,7 +209,7 @@ ActiveRecord::Schema.define(version: 2019_08_07_092706) do
     t.integer "account_id", null: false
     t.string "address", limit: 95
     t.string "secret_encrypted"
-    t.string "details_encrypted"
+    t.string "details_encrypted", limit: 1024
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["currency_id", "address"], name: "index_payment_addresses_on_currency_id_and_address", unique: true
@@ -278,10 +278,10 @@ ActiveRecord::Schema.define(version: 2019_08_07_092706) do
     t.integer "kind", null: false
     t.integer "nsig"
     t.string "gateway", limit: 20, default: "", null: false
+    t.string "settings_encrypted", limit: 1024
     t.decimal "max_balance", precision: 32, scale: 16, default: "0.0", null: false
     t.integer "parent"
     t.string "status", limit: 32
-    t.string "settings_encrypted"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["currency_id"], name: "index_wallets_on_currency_id"

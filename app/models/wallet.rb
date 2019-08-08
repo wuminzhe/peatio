@@ -29,7 +29,7 @@ class Wallet < ApplicationRecord
     end
 
     define_method "#{attribute}=".to_sym do |value|
-      self.settings = self.settings.merge(attribute.to_s => value)
+      update(settings: self.settings.merge(attribute.to_s => value))
     end
   end
 
@@ -126,7 +126,7 @@ end
 #  max_balance        :decimal(32, 16)  default(0.0), not null
 #  parent             :integer
 #  status             :string(32)
-#  settings_encrypted :string(255)
+#  settings_encrypted :string(1024)
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #
