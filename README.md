@@ -82,7 +82,7 @@ Otherwise we advice to use [microkube based environment](#local-development-envi
 ### Local development without microkube
 
 1. Set up initial configuration `./bin/setup`
-2. Start peatio daemons `god -c lib/daemons/daemons.god`
+2. Start peatio daemons `god -c lib/daemons/daemons.god`. `gem install god` if god is not installed yet.
 3. Add this to your `/etc/hosts`:
 ```
 127.0.0.1 www.app.local
